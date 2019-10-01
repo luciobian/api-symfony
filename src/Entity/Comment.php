@@ -6,7 +6,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      itemOperations={"get"},
+ *      collectionOperations={"get"}
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
 class Comment
@@ -28,7 +31,7 @@ class Comment
      */
     private $published;
 
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
@@ -69,26 +72,26 @@ class Comment
 
         return $this;
     }
-     
+
     public function getAuthor(): User
     {
         return $this->author;
     }
 
-    public function setAuthor(User $author) : self
+    public function setAuthor(User $author): self
     {
         $this->author = $author;
 
         return $this;
     }
- 
+
     public function getBlogPost(): BlogPost
     {
         return $this->blogPost;
-    } 
+    }
 
 
-    public function setBlogPost(BlogPost $blogPost) : self
+    public function setBlogPost(BlogPost $blogPost): self
     {
         $this->blogPost = $blogPost;
 
