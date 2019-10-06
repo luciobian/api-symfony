@@ -23,6 +23,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *               "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
  *          }
  *      },
+ *      subresourceOperations={
+*         "api_blog_posts_comments_get_subresource"={
+*             "normalization_context"={
+*                 "groups"={"get-comment-with-author"}
+*             }
+*         }
+*       },
  *      denormalizationContext={
  *          "groups"={"post"}
  *      }
@@ -36,6 +43,7 @@ class Comment implements AuthoredEntityInterface, PublishedDateEntityInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get-comment-with-author"})
      */
     private $id;
 
@@ -43,12 +51,13 @@ class Comment implements AuthoredEntityInterface, PublishedDateEntityInterface
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=3000)
-     * @Groups({"post"})
+     * @Groups({"post","get-comment-with-author"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get-comment-with-author"})
      */
     private $published;
 
@@ -56,12 +65,14 @@ class Comment implements AuthoredEntityInterface, PublishedDateEntityInterface
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get-comment-with-author"})
      */
     private $author;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\BlogPost", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"post"})
      */
     private $blogPost;
 
