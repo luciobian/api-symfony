@@ -6,8 +6,11 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\PublishedDateEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BlogPostRepository")
@@ -23,10 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "post"={
  *               "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
  *          }
+ *      },
+ *      denormalizationContext={
+ *          "groups"={"post"}
  *      }
  * )
  */
-class BlogPost
+class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
 {
     /**
      * @ORM\Id()
@@ -39,13 +45,12 @@ class BlogPost
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Assert\Length(min=10)
+     * @Groups({"post"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotBlank()
-     * @Assert\DateTime()
      */
     private $published;
 
@@ -53,19 +58,20 @@ class BlogPost
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
      * @Assert\Length(min=20)
+     * @Groups({"post"})
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity="\App\Entity\User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
      */
     private $author;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotBlank()
+     * @Groups({"post"})
      */
     private $slug;
 
@@ -101,7 +107,7 @@ class BlogPost
         return $this->published;
     }
 
-    public function setPublished(\DateTimeInterface $published): self
+    public function setPublished(\DateTimeInterface $published): PublishedDateEntityInterface
     {
         $this->published = $published;
 
@@ -136,7 +142,7 @@ class BlogPost
         return $this->author;
     }
 
-    public function setAuthor(User $author) : self
+    public function setAuthor(UserInterface $author) : AuthoredEntityInterface
     {
         $this->author = $author;
 
