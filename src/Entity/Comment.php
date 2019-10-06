@@ -24,18 +24,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *          }
  *      },
  *      subresourceOperations={
-*         "api_blog_posts_comments_get_subresource"={
-*             "normalization_context"={
-*                 "groups"={"get-comment-with-author"}
-*             }
-*         }
-*       },
+ *         "api_blog_posts_comments_get_subresource"={
+ *             "normalization_context"={
+ *                 "groups"={"get-comment-with-author"}
+ *             }
+ *         }
+ *       },
  *      denormalizationContext={
  *          "groups"={"post"}
  *      }
  * 
  * )
-  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
 class Comment implements AuthoredEntityInterface, PublishedDateEntityInterface
 {
