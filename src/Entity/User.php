@@ -15,13 +15,32 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *  @ApiResource(
  *      itemOperations={
  *          "get"={
- *               "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *               "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *               "normalization_context"={
+ *                  "groups"="get"
+ *               }
+ *          },
+ *          "put"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+ *              "denormalization_context"={
+ *                 "groups"="put"
+ *              },
+ *              "normalization_context"={
+ *                  "groups"="get"
+ *               }
  *          }
+ *          
  *      },
- *      collectionOperations={"post"},
- *      normalizationContext={
- *          "groups"="read"
- *      }
+ *      collectionOperations={
+ *          "post"={
+ *              "denormalization_context"={
+ *                 "groups"="post"
+ *              },
+ *              "normalization_context"={
+ *                  "groups"="get"
+ *               }
+ *          }
+ *      }      
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository"),
  * @UniqueEntity("username"),
@@ -33,13 +52,13 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read"})
+     * @Groups({"get","post"})
      * @Assert\NotBlank()
      */
     private $username;
@@ -52,6 +71,7 @@ class User implements UserInterface
      *      pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
      *      message="Password must be seven characters long and contain at least on digit, one uppercase letter and one lowercase letter."
      * )
+     * @Groups({"post", "put"})
      */
     private $password;
 
@@ -61,14 +81,16 @@ class User implements UserInterface
      *      "this.getPassword() === this.getRetypedPassword()",
      *      message="Password does not match."
      * )
+     * @Groups({"post", "put"})
      */
     private $retypedPassword;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read"})
+     * @Groups({"get"})
      * @Assert\NotBlank()
      * @Assert\Length(min=6, max=255)
+     * @Groups({"post", "put"})
      */
     private $name;
 
@@ -77,18 +99,19 @@ class User implements UserInterface
      * @Assert\NotBlank()
      * @Assert\Email()
      * @Assert\Length(min=6, max=255)
+     * @Groups({"post", "put"})
      */
     private $email;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\BlogPost", mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $posts;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $comments;
 
