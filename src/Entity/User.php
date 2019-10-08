@@ -23,10 +23,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "put"={
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
  *              "denormalization_context"={
- *                 "groups"="put"
+ *                 "groups"={"put"}
  *              },
  *              "normalization_context"={
- *                  "groups"="get"
+ *                  "groups"={"get"}
  *               }
  *          }
  *          
@@ -34,10 +34,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      collectionOperations={
  *          "post"={
  *              "denormalization_context"={
- *                 "groups"="post"
+ *                 "groups"={"post"}
  *              },
  *              "normalization_context"={
- *                  "groups"="get"
+ *                  "groups"={"get"}
  *               }
  *          }
  *      }      
@@ -106,7 +106,7 @@ class User implements UserInterface
      * @Assert\NotBlank()
      * @Assert\Email()
      * @Assert\Length(min=6, max=255)
-     * @Groups({"post", "put"})
+     * @Groups({"post", "put", "get-admin", "get-owner"})
      */
     private $email;
 
@@ -124,6 +124,7 @@ class User implements UserInterface
     
     /**
      * @ORM\Column(type="simple_array", length=200)
+     * @Groups({"get-admin", "get-owner"})
      */
     private $roles;    
 
