@@ -3,23 +3,25 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\UploadImageAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
- * 
+ * @ORM\Entity()
+ * @Vich\Uploadable()
  * @ApiResource(
- *      collectionOperations={
- *          "get",
- *          "post"={
- *              "method"="POST",
- *              "path"="/images",
- *              "controller"=UploadImageAction::class,
- *              "defaults"={"_api_receive"=false}
- *          },
- * 
- *      }
+ *     collectionOperations={
+ *         "get",
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/images",
+ *             "controller"=UploadImageAction::class,
+ *             "defaults"={"_api_receive"=false}
+ *         }
+ *     }
  * )
  */
 class Image
@@ -35,11 +37,13 @@ class Image
 
     /**
      * @Vich\UploadableField(mapping="images", fileNameProperty="url")
+     * @Assert\NotNull()
      */
     private $file;
 
     /**
      * @ORM\Column(nullable=true)
+     * @Groups({"get-blog-post-with-author"})
      */
     private $url;
 
@@ -63,23 +67,21 @@ class Image
     }
 
      
-    public function setFile($file)
+    public function setFile($file):void
     {
         $this->file = $file;
 
-        return $this;
     }
 
      
     public function getUrl()
     {
-        return $this->url;
+        return '/images/'.$this->url;
     }
  
-    public function setUrl($url)
+    public function setUrl($url):void
     {
         $this->url = $url;
 
-        return $this;
     }
 }
