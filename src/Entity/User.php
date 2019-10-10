@@ -108,29 +108,31 @@ class User implements UserInterface
     
     /**    
     * @Groups({"put-reset-password"})
-    * @Assert\NotBlank()
-    * @Assert\Length(min=6, max=255)
+    * @Assert\NotBlank(groups={"put-reset-password"})
+    * @Assert\Length(min=6, max=255,groups={"put-reset-password"})
     * @Assert\Regex(
     *      pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
-    *      message="Password must be seven characters long and contain at least on digit, one uppercase letter and one lowercase letter."
+    *      message="Password must be seven characters long and contain at least on digit, one uppercase letter and one lowercase letter.",
+    *      groups={"put-reset-password"}
     * )
     */
     private $newPassword;
     
     /**
      * @Groups({"put-reset-password"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"put-reset-password"})
      * @Assert\Expression(
      *      "this.getNewPassword() === this.getNewRetypedPassword()",
-     *      message="Password does not match."
+     *      message="Password does not match.",
+     *      groups={"put-reset-password"}
      * )
      */
     private $newRetypedPassword;
     
     /**
      * @Groups({"put-reset-password"})
-     * @Assert\NotBlank()
-     * @UserPassword()
+     * @Assert\NotBlank(groups={"put-reset-password"})
+     * @UserPassword(groups={"put-reset-password"})
      */
     private $oldPassword;
 
@@ -173,13 +175,26 @@ class User implements UserInterface
      * @ORM\Column(type="simple_array", length=200)
      * @Groups({"get-admin", "get-owner"})
      */
-    private $roles;    
+    private $roles;  
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled;
 
+    /**
+     * @ORM\Column(type="string",length=40,nullable=true)
+     */
+    private $confirmationToken;
+
+    
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();  
         $this->roles = self::DEFAULT_ROLE;
+        $this->enabled = false;
+        $this->confirmationToken = null;
     }
 
 
@@ -237,12 +252,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getComments() : Collection
+    public function getComments() 
     {
         return $this->comments;
     }
      
-    public function getPosts() : Collection
+    public function getPosts() 
     {
         return $this->posts;
     }
@@ -327,6 +342,32 @@ class User implements UserInterface
     public function setPasswordChangeDate($passwordChangeDate)
     {
         $this->passwordChangeDate = $passwordChangeDate;
+
+        return $this;
+    }
+
+     
+    public function getConfirmationToken()
+    {
+        return $this->confirmationToken;
+    }
+
+     
+    public function setConfirmationToken($confirmationToken)
+    {
+        $this->confirmationToken = $confirmationToken;
+
+        return $this;
+    }
+
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }
