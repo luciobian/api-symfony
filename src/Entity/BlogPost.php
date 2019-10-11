@@ -54,7 +54,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *      }
  * )
  * @ApiResource(
- *     attributes={"order"={"published": "DESC"}, "maximun_items_per_page"=30}, 
+ *     attributes={"order"={"published": "DESC"}, "maximun_items_per_page"=30, "pagination_partial"=true}, 
  *     itemOperations={
  *         "get"={
  *             "normalization_context"={
