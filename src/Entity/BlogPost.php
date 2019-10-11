@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
@@ -42,7 +43,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "published",
  *          "title"
  *      },
- *      "arguments"={"orderParameterName"="_order"}
+ *      arguments={"orderParameterName"="_order"}
+ * )
+ * @ApiFilter(
+ *      PropertyFilter::class, 
+ *      arguments={
+ *          "parameterName":"properties",
+ *          "overrideDefaultProperties":false, 
+ *          "whitelist":{"id", "author", "slug", "title", "content"}
+ *      }
  * )
  * @ApiResource(
  *     attributes={"order"={"published": "DESC"}}, 
