@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BlogPostRepository")
@@ -20,6 +21,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "content": "partial",
  *          "author": "exact"
  *      }
+ * )
+ * @ApiFilter(
+ *      DateFilter::class,
+ *      "ppublished":
  * )
  * @ApiResource(
  *     attributes={"order"={"published": "DESC"}}, 
