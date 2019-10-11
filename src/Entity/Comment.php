@@ -9,8 +9,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
+/** 
 * @ApiResource(
+ *      attributes={"order"={"published":"DESC"}, "pagination_enabled"=false, "pagination_client_enabled"=true},   
  *      itemOperations={
  *          "get",
  *          "put"={
