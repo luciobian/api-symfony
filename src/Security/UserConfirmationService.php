@@ -2,9 +2,10 @@
 
 namespace App\Security;
 
-use App\Exception\InvalidConfirmationTokenException;
+use Monolog\Logger;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Exception\InvalidConfirmationTokenException;
 
 class UserConfirmationService 
 {
@@ -13,11 +14,16 @@ class UserConfirmationService
 
     private $entityManager;
 
-    public function __construct(UserRepository $userRepository,
-                                EntityManagerInterface $entityManager)
+    private $logger;
+    
+    public function __construct(
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager,
+        Logger $logger)
     {   
         $this->userRepository = $userRepository;    
         $this->entityManager = $entityManager;
+        $this->logger = $logger;
     }
 
     public function confirmUser(string $confirmationToken)
