@@ -13,35 +13,33 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AuthoredEntitySuscriber implements EventSubscriberInterface
 {
-    /**
+   /**
      * @var TokenStorageInterface
      */
     private $tokenStorage;
-
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
-
     public static function getSubscribedEvents()
     {
         return [
             KernelEvents::VIEW => ['getAuthenticatedUser', EventPriorities::PRE_WRITE]
         ];
     }
-
     public function getAuthenticatedUser(GetResponseForControllerResultEvent $event)
     {
         $entity = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
-
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            return;
+        }
         /** @var UserInterface $author */
-        $author = $this->tokenStorage->getToken()->getUser();
-
+        $author = $token->getUser();
         if (!$entity instanceof AuthoredEntityInterface || Request::METHOD_POST !== $method) {
             return;
         }
-
         $entity->setAuthor($author);
     }
 }
